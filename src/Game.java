@@ -4,7 +4,7 @@ import java.util.Scanner;
 
 public class Game {
     public static void main (String[] args){
-
+// First commit test
 // Задаём базовое игровое поле без игрока и предмета.
         //               0  1  2  3  4  5
         int[][] field = {{1, 1, 1, 1, 1, 1},     //0
