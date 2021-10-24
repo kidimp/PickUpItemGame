@@ -3,7 +3,9 @@ import java.util.Collections;
 import java.util.Scanner;
 
 public class Game {
+    private static int fieldLength = 5;
     public static void main (String[] args){
+
 // First commit test
 // Задаём базовое игровое поле без игрока и предмета.
         //               0  1  2  3  4  5
@@ -18,7 +20,7 @@ public class Game {
 
 // Определяем стартовое положение игрока (xp, yp) и предмета (xi, yi).
         ArrayList<Integer> listX = new ArrayList<>();
-        for (int i = 1; i < 5; i++) {
+        for (int i = 1; i < fieldLength; i++) {
             listX.add(i);
         }
         Collections.shuffle(listX);
@@ -27,7 +29,7 @@ public class Game {
         int xi = listX.get(1);
 
         ArrayList<Integer> listY = new ArrayList<>();
-        for (int i = 1; i < 5; i++) {
+        for (int i = 1; i < fieldLength; i++) {
             listY.add(i);
         }
         Collections.shuffle(listY);
@@ -39,8 +41,8 @@ public class Game {
         field[xp][yp] = 2;
         field[xi][yi] = 8;
 
-        for (int i = 1; i < 5; i++) {
-            for (int j = 1; j < 5; j++) {
+        for (int i = 1; i < fieldLength; i++) {
+            for (int j = 1; j < fieldLength; j++) {
                 System.out.print(field[i][j] + "  ");
             }
             System.out.println();
@@ -180,16 +182,16 @@ public class Game {
 
 // Проверяем, остался ли предмет на игровом поле. Если предмета нет, то завершаем игру.
             int count = 0;
-            for (int i = 1; i < 5; i++) {
-                for (int j = 1; j < 5; j++) {
+            for (int i = 1; i < fieldLength; i++) {
+                for (int j = 1; j < fieldLength; j++) {
                     if (field[i][j] == 8) {
                         count++;
                     }
                 }
             }
             if (count == 0){
-                for (int i = 1; i < 5; i++) {
-                    for (int j = 1; j < 5; j++) {
+                for (int i = 1; i < fieldLength; i++) {
+                    for (int j = 1; j < fieldLength; j++) {
                         System.out.print(field[i][j] + "  ");
                     }
                     System.out.println();
