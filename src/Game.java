@@ -1,14 +1,27 @@
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Scanner;
 
 public class Game {
-    private static int fieldLength = 5;
-    public static void main (String[] args){
+    final private static int FIELD_LENGTH = 5;
+    final private static int NUMBER_OF_ATTEMPTS_LIMIT = 10;
 
-// First commit test
-// Задаём базовое игровое поле без игрока и предмета.
-        //               0  1  2  3  4  5
+    final private static int PLAYER = 2;
+    final private static int ITEM = 8;
+    final private static int EMPTY_CELL = 0;
+    final private static int BORDER = 1;
+
+    final private static int UP = 50;
+    final private static int DOWN = 56;
+    final private static int LEFT = 52;
+    final private static int RIGHT = 54;
+
+    public static void main(String[] args) throws InterruptedException {
+
+
+    // Задаём базовое игровое поле без игрока и без предмета.
+    //                   0  1  2  3  4  5
         int[][] field = {{1, 1, 1, 1, 1, 1},     //0
                          {1, 0, 0, 0, 0, 1},     //1
                          {1, 0, 0, 0, 0, 1},     //2
@@ -16,224 +29,273 @@ public class Game {
                          {1, 0, 0, 0, 0, 1},     //4
                          {1, 1, 1, 1, 1, 1}};    //5
 
-        int counter = 0;
+        int counterAttempts = 0;
 
-// Определяем стартовое положение игрока (xp, yp) и предмета (xi, yi).
-        ArrayList<Integer> listX = new ArrayList<>();
-        for (int i = 1; i < fieldLength; i++) {
-            listX.add(i);
+        // Определяем стартовое положение игрока (playerLocationX, playerLocationY) и предмета (itemLocationX, itemLocationY).
+        
+        // Создаём ArrayList длиной FIELD_LENGTH, заполняем его значениями от 1 до FIELD_LENGTH, 
+        // перемешиваем эти значения, после берём значения под индексами 0 и 1 и присваиваем 
+        // их playerLocationX и itemLocationX, что гарантирует нам, что значения не повтаряться и PLAYER и ITEM 
+        // не окажатся в одной ячейке. То же самое делаем для координаты Y.
+        ArrayList<Integer> listForLocationX = new ArrayList<>();
+        for (int i = 1; i < FIELD_LENGTH; i++) {
+            listForLocationX.add(i);
         }
-        Collections.shuffle(listX);
+        Collections.shuffle(listForLocationX);
 
-        int xp = listX.get(0);
-        int xi = listX.get(1);
+        int playerLocationX = listForLocationX.get(0);
+        int itemLocationX = listForLocationX.get(1);
 
-        ArrayList<Integer> listY = new ArrayList<>();
-        for (int i = 1; i < fieldLength; i++) {
-            listY.add(i);
+        ArrayList<Integer> listForLocationY = new ArrayList<>();
+        for (int i = 1; i < FIELD_LENGTH; i++) {
+            listForLocationY.add(i);
         }
-        Collections.shuffle(listY);
+        Collections.shuffle(listForLocationY);
 
-        int yp = listY.get(0);
-        int yi = listY.get(1);
+        int playerLocationY = listForLocationY.get(0);
+        int itemLocationY = listForLocationY.get(1);
 
-// Добавляем игрока и предмет на игровое поле. Выводим игровое поле в консоль.
-        field[xp][yp] = 2;
-        field[xi][yi] = 8;
+        // Добавляем игрока и предмет на игровое поле. Выводим игровое поле в консоль.
+        field[playerLocationX][playerLocationY] = PLAYER;
+        field[itemLocationX][itemLocationY] = ITEM;
 
-        for (int i = 1; i < fieldLength; i++) {
-            for (int j = 1; j < fieldLength; j++) {
+        for (int i = 1; i < FIELD_LENGTH; i++) {
+            for (int j = 1; j < FIELD_LENGTH; j++) {
                 System.out.print(field[i][j] + "  ");
             }
             System.out.println();
         }
-// Двигаемся по полю и пытаемся подобрать предмет.
-        for (int k = 0; k < 99; k++) {
+
+        System.out.println("This is the game field.");
+        System.out.println("\"2\" is a player, \"8\" is an item.");
+        System.out.println("You can move on the field.");
+        System.out.println("\"2\" is for UP, \"8\" is for DOWN, \"4\" is for LEFT, \"6\" is for RIGHT.");
+        System.out.println("Be wise when you choose your way.");
+        System.out.println("Ready or not - let's go!");
+        Thread.sleep(500);
+        System.out.print("3");
+        for (int i = 0; i < 5; i++) {
+            Thread.sleep(200);
+            System.out.print(".");
+        }
+        System.out.print("2");
+        for (int i = 0; i < 5; i++) {
+            Thread.sleep(200);
+            System.out.print(".");
+        }
+        System.out.print("1");
+        for (int i = 0; i < 5; i++) {
+            Thread.sleep(200);
+            System.out.print(".");
+        }
+        System.out.println("GO!");
+        Thread.sleep(500);
+
+        // Двигаемся по полю и пытаемся подобрать предмет.
+        // Делаем это пока количество попыток меньше, чем NUMBER_OF_ATTEMPTS_LIMIT.
+        for (int k = 0; k < NUMBER_OF_ATTEMPTS_LIMIT; k++) {
+
             System.out.println("Which way?");
 
             Scanner in = new Scanner(System.in);
             String check = in.nextLine();
-            if (check.length() != 1){
+
+            if (check.length() != 1) {
+                counterAttempts++;
+                if (counterAttempts == NUMBER_OF_ATTEMPTS_LIMIT) {
+                    continue;
+                }
                 System.out.println("Choose you way carefully!");
-                continue;
             }
 
             int move = check.charAt(0);
 
-            if ((move != 56) & (move != 50) & (move != 52) & (move != 54)){
+            if ((move != UP) & (move != DOWN) & (move != LEFT) & (move != RIGHT)) {
+                counterAttempts++;
+                if (counterAttempts == NUMBER_OF_ATTEMPTS_LIMIT) {
+                    continue;
+                }
                 System.out.println("Choose you way carefully!");
-                continue;
             }
 
             switch (move) {
                 // Двигаемся вверх.
-                case 56: {
-                    switch (field[xp - 1][yp]) {
-                        case 0:
-                            xp = xp - 1;
-                            field[xp][yp] = 2;
-                            field[xp + 1][yp] = 0;
-                            for (int i = 1; i < 5; i++) {
-                                for (int j = 1; j < 5; j++) {
+                case UP -> {
+                    counterAttempts++;
+                    switch (field[playerLocationX - 1][playerLocationY]) {
+                        case EMPTY_CELL -> {
+                            playerLocationX = playerLocationX - 1;
+                            field[playerLocationX][playerLocationY] = PLAYER;
+                            field[playerLocationX + 1][playerLocationY] = EMPTY_CELL;
+                            for (int i = 1; i < FIELD_LENGTH; i++) {
+                                for (int j = 1; j < FIELD_LENGTH; j++) {
                                     System.out.print(field[i][j] + "  ");
                                 }
                                 System.out.println();
                             }
-                            break;
-                        case 1:
+                        }
+                        case BORDER -> {
+                            if (counterAttempts == NUMBER_OF_ATTEMPTS_LIMIT) {
+                                continue;
+                            }
                             System.out.println("You hit the border. Go another way.");
-                            break;
-                        case 8:
-                            xp = xp - 1;
-                            field[xp][yp] = 2;
-                            field[xp + 1][yp] = 0;
-                            break;
-                        default:
-                            System.out.println("Error!");
-                            break;
+                        }
+                        case ITEM -> {
+                            playerLocationX = playerLocationX - 1;
+                            field[playerLocationX][playerLocationY] = PLAYER;
+                            field[playerLocationX + 1][playerLocationY] = EMPTY_CELL;
+                        }
+                        default -> System.out.println("Error!");
                     }
-                    break;
                 }
+
                 // Двигаемся вниз.
-                case 50: {
-                    switch (field[xp + 1][yp]) {
-                        case 0:
-                            xp = xp + 1;
-                            field[xp][yp] = 2;
-                            field[xp - 1][yp] = 0;
-                            for (int i = 1; i < 5; i++) {
-                                for (int j = 1; j < 5; j++) {
+                case DOWN -> {
+                    counterAttempts++;
+                    switch (field[playerLocationX + 1][playerLocationY]) {
+                        case EMPTY_CELL -> {
+                            playerLocationX = playerLocationX + 1;
+                            field[playerLocationX][playerLocationY] = PLAYER;
+                            field[playerLocationX - 1][playerLocationY] = EMPTY_CELL;
+                            for (int i = 1; i < FIELD_LENGTH; i++) {
+                                for (int j = 1; j < FIELD_LENGTH; j++) {
                                     System.out.print(field[i][j] + "  ");
                                 }
                                 System.out.println();
                             }
-                            break;
-                        case 1:
+                        }
+                        case BORDER -> {
+                            if (counterAttempts == NUMBER_OF_ATTEMPTS_LIMIT) {
+                                continue;
+                            }
                             System.out.println("You hit the border. Go another way.");
-                            break;
-                        case 8:
-                            xp = xp + 1;
-                            field[xp][yp] = 2;
-                            field[xp - 1][yp] = 0;
-                            break;
-                        default:
-                            System.out.println("Error!");
-                            break;
+                        }
+                        case ITEM -> {
+                            playerLocationX = playerLocationX + 1;
+                            field[playerLocationX][playerLocationY] = PLAYER;
+                            field[playerLocationX - 1][playerLocationY] = EMPTY_CELL;
+                        }
+                        default -> System.out.println("Error!");
                     }
-                    break;
                 }
+
                 // Двигаемся влево.
-                case 52: {
-                    switch (field[xp][yp - 1]) {
-                        case 0:
-                            yp = yp - 1;
-                            field[xp][yp] = 2;
-                            field[xp][yp + 1] = 0;
-                            for (int i = 1; i < 5; i++) {
-                                for (int j = 1; j < 5; j++) {
+                case LEFT -> {
+                    counterAttempts++;
+                    switch (field[playerLocationX][playerLocationY - 1]) {
+                        case EMPTY_CELL -> {
+                            playerLocationY = playerLocationY - 1;
+                            field[playerLocationX][playerLocationY] = PLAYER;
+                            field[playerLocationX][playerLocationY + 1] = EMPTY_CELL;
+                            for (int i = 1; i < FIELD_LENGTH; i++) {
+                                for (int j = 1; j < FIELD_LENGTH; j++) {
                                     System.out.print(field[i][j] + "  ");
                                 }
                                 System.out.println();
                             }
-                            break;
-                        case 1:
+                        }
+                        case BORDER -> {
+                            if (counterAttempts == NUMBER_OF_ATTEMPTS_LIMIT) {
+                                continue;
+                            }
                             System.out.println("You hit the border. Go another way.");
-                            break;
-                        case 8:
-                            yp = yp - 1;
-                            field[xp][yp] = 2;
-                            field[xp][yp + 1] = 0;
-                            break;
-                        default:
-                            System.out.println("Error!");
-                            break;
+                        }
+                        case ITEM -> {
+                            playerLocationY = playerLocationY - 1;
+                            field[playerLocationX][playerLocationY] = PLAYER;
+                            field[playerLocationX][playerLocationY + 1] = EMPTY_CELL;
+                        }
+                        default -> System.out.println("Error!");
                     }
-                    break;
                 }
+
                 // Двигаемся вправо.
-                case 54: {
-                    switch (field[xp][yp + 1]) {
-                        case 0:
-                            yp = yp + 1;
-                            field[xp][yp] = 2;
-                            field[xp][yp - 1] = 0;
-                            for (int i = 1; i < 5; i++) {
-                                for (int j = 1; j < 5; j++) {
+                case RIGHT -> {
+                    counterAttempts++;
+                    switch (field[playerLocationX][playerLocationY + 1]) {
+                        case EMPTY_CELL -> {
+                            playerLocationY = playerLocationY + 1;
+                            field[playerLocationX][playerLocationY] = PLAYER;
+                            field[playerLocationX][playerLocationY - 1] = EMPTY_CELL;
+                            for (int i = 1; i < FIELD_LENGTH; i++) {
+                                for (int j = 1; j < FIELD_LENGTH; j++) {
                                     System.out.print(field[i][j] + "  ");
                                 }
                                 System.out.println();
                             }
-                            break;
-                        case 1:
+                        }
+                        case BORDER -> {
+                            if (counterAttempts == NUMBER_OF_ATTEMPTS_LIMIT) {
+                                continue;
+                            }
                             System.out.println("You hit the border. Go another way.");
-                            break;
-                        case 8:
-                            yp = yp + 1;
-                            field[xp][yp] = 2;
-                            field[xp][yp - 1] = 0;
-                            break;
-                        default:
-                            System.out.println("Error!");
-                            break;
+                        }
+                        case ITEM -> {
+                            playerLocationY = playerLocationY + 1;
+                            field[playerLocationX][playerLocationY] = PLAYER;
+                            field[playerLocationX][playerLocationY - 1] = EMPTY_CELL;
+                        }
+                        default -> System.out.println("Error!");
                     }
-                    break;
                 }
             } // Конец внешнего switch.
 
-// Проверяем, остался ли предмет на игровом поле. Если предмета нет, то завершаем игру.
+            // Проверяем, остался ли предмет на игровом поле. Если предмета нет, то завершаем игру.
             int count = 0;
-            for (int i = 1; i < fieldLength; i++) {
-                for (int j = 1; j < fieldLength; j++) {
-                    if (field[i][j] == 8) {
+            for (int i = 1; i < FIELD_LENGTH; i++) {
+                for (int j = 1; j < FIELD_LENGTH; j++) {
+                    if (field[i][j] == ITEM) {
                         count++;
                     }
                 }
             }
-            if (count == 0){
-                for (int i = 1; i < fieldLength; i++) {
-                    for (int j = 1; j < fieldLength; j++) {
+            if (count == 0) {
+                for (int i = 1; i < FIELD_LENGTH; i++) {
+                    for (int j = 1; j < FIELD_LENGTH; j++) {
                         System.out.print(field[i][j] + "  ");
                     }
                     System.out.println();
                 }
-                System.out.println("Your pick it up!");
+                System.out.println("""
+                        ░░░░░░░░░░░░░░░░░░░░
+                        ░░░░░▄▀▀▀▄░░░░░░░░░░
+                        ▄███▀░◐░░░▌░░░░░░░░░
+                        ░░░░▌░░░░░▐░░░░░░░░░
+                        ░░░░▐░░░░░▐░░░░░░░░░
+                        ░░░░▌░░░░░▐▄▄░░░░░░░
+                        ░░░░▌░░░░▄▀▒▒▀▀▀▀▄
+                        ░░░▐░░░░▐▒▒▒▒▒▒▒▒▀▀▄
+                        ░░░▐░░░░▐▄▒▒▒▒▒▒▒▒▒▒▀▄
+                        ░░░░▀▄░░░░▀▄▒▒▒▒▒▒▒▒▒▒▀▄
+                        ░░░░░░▀▄▄▄▄▄█▄▄▄▄▄▄▄▄▄▄▄▀▄
+                        ░░░░░░░░░░░▌▌░▌▌░░░░░
+                        ░░░░░░░░░░░▌▌░▌▌░░░░░
+                        ░░░░░░░░░▄▄▌▌▄▌▌░░░░░""");
+                System.out.println("You picked it up!");
                 System.out.println("Hail to the goose!");
-                System.out.println("░░░░░░░░░░░░░░░░░░░░\n" +
-                        "░░░░░▄▀▀▀▄░░░░░░░░░░\n" +
-                        "▄███▀░◐░░░▌░░░░░░░░░\n" +
-                        "░░░░▌░░░░░▐░░░░░░░░░\n" +
-                        "░░░░▐░░░░░▐░░░░░░░░░\n" +
-                        "░░░░▌░░░░░▐▄▄░░░░░░░\n" +
-                        "░░░░▌░░░░▄▀▒▒▀▀▀▀▄\n" +
-                        "░░░▐░░░░▐▒▒▒▒▒▒▒▒▀▀▄\n" +
-                        "░░░▐░░░░▐▄▒▒▒▒▒▒▒▒▒▒▀▄\n" +
-                        "░░░░▀▄░░░░▀▄▒▒▒▒▒▒▒▒▒▒▀▄\n" +
-                        "░░░░░░▀▄▄▄▄▄█▄▄▄▄▄▄▄▄▄▄▄▀▄\n" +
-                        "░░░░░░░░░░░▌▌░▌▌░░░░░\n" +
-                        "░░░░░░░░░░░▌▌░▌▌░░░░░\n" +
-                        "░░░░░░░░░▄▄▌▌▄▌▌░░░░░");
                 break;
             }
 
-            counter++;
-
         } // Конец for(k99).
-            if (counter == 99){
-                System.out.println("Okay. That's enough.");
-                System.out.println("You are way too slow. LOL");
-                System.out.println("░░░░░░░▄▄███████▄▄░░░░░░░░░░░░░░░░░░\n" +
-                        "░░░░░▄███████▀██████▄░░░░░░░░░░░░░░░\n" +
-                        "░░░▄████▀▀░░░░░░░▀▀██▄░░░░░░░░░░░░░░\n" +
-                        "░░░████░░░▄█████▄░░▀███░░░░░░▄░░░░░░\n" +
-                        "░░████░░░█▀░░░░███▄░░██░░░░░███░░▄█▄\n" +
-                        "░░████░░░█░░░░░░███░░██░░░░░░█░░░▀█▀\n" +
-                        "░░░████░░░░░░░░▄███░░░█░░░░░▄▀░░░▄▀░\n" +
-                        "░░░▀████▄░░░░▄▄███▀░░█▀░░░░░█▄░░░█░░\n" +
-                        "░░░░░▀███████████▄▄▄██████████▄▄█░░░\n" +
-                        "░░░░░░░▀▀███████████████████████▀░░░\n" +
-                        "░░░░▄▄▄█████▀▀▀▀▀▀▀▀▀▀▀▀▀███████▄░░░\n" +
-                        "▄█████████████████████████████████░░");
-            }
+        if (counterAttempts == NUMBER_OF_ATTEMPTS_LIMIT) {
+            System.out.println("Okay. That's enough.");
+            Thread.sleep(1000);
+            System.out.println("You are way too slow. LOL");
+            Thread.sleep(1000);
+            System.out.println("""
+                    ░░░░░░░▄▄███████▄▄░░░░░░░░░░░░░░░░░░
+                    ░░░░░▄███████▀██████▄░░░░░░░░░░░░░░░
+                    ░░░▄████▀▀░░░░░░░▀▀██▄░░░░░░░░░░░░░░
+                    ░░░████░░░▄█████▄░░▀███░░░░░░▄░░░░░░
+                    ░░████░░░█▀░░░░███▄░░██░░░░░███░░▄█▄
+                    ░░████░░░█░░░░░░███░░██░░░░░░█░░░▀█▀
+                    ░░░████░░░░░░░░▄███░░░█░░░░░▄▀░░░▄▀░
+                    ░░░▀████▄░░░░▄▄███▀░░█▀░░░░░█▄░░░█░░
+                    ░░░░░▀███████████▄▄▄██████████▄▄█░░░
+                    ░░░░░░░▀▀███████████████████████▀░░░
+                    ░░░░▄▄▄█████▀▀▀▀▀▀▀▀▀▀▀▀▀███████▄░░░
+                    ▄█████████████████████████████████░░""");
+        }
 
     } // Конец метода main.
 }
